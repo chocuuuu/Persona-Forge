@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
 
 export async function GET() {
-  const provider = (process.env.AI_PROVIDER || "openai").toLowerCase()
+  const provider = (process.env.AI_PROVIDER || "groq").toLowerCase()
   const openaiConfigured = !!process.env.OPENAI_API_KEY
   const groqConfigured = !!process.env.GROQ_API_KEY
-  const configured = (provider === "openai" && openaiConfigured) || (provider === "groq" && groqConfigured)
+  const configured = (provider === "groq" && openaiConfigured) || (provider === "groq" && groqConfigured)
 
   return NextResponse.json({
     configured,
