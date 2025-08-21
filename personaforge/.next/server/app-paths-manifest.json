@@ -1,6 +1,7 @@
 {
-  "/login/page": "app/login/page.js",
+  "/api/ai/ping/route": "app/api/ai/ping/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/ai/route": "app/api/ai/route.js",
   "/chat/page": "app/chat/page.js",
-  "/page": "app/page.js",
-  "/profile/page": "app/profile/page.js"
+  "/page": "app/page.js"
 }

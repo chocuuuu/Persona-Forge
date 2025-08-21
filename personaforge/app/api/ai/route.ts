@@ -6,7 +6,7 @@ import { AI_CONFIG } from "@/lib/ai-config"
 function selectModel() {
   // Use forced provider if specified, otherwise use env var or default to groq
   const provider =
-    AI_CONFIG.FORCE_PROVIDER === "auto" ? (process.env.AI_PROVIDER || "groq").toLowerCase() : AI_CONFIG.FORCE_PROVIDER
+    AI_CONFIG.FORCE_PROVIDER === "auto" ? (process.env.AI_PROVIDER || "openai").toLowerCase() : AI_CONFIG.FORCE_PROVIDER
 
   if (provider === "groq") {
     const apiKey = process.env.GROQ_API_KEY
