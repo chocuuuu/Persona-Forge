@@ -2,29 +2,12 @@ import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai as openaiProvider, createOpenAI } from "@ai-sdk/openai"
 import { AI_CONFIG } from "@/lib/ai-config"
+import { isFinancialQuery, getFinancialRefusalMessage } from "@/lib/financial-guard"
 
 function selectModel() {
-  // Use forced provider if specified, otherwise use env var or default to groq
+  // Use forced provider if specified, otherwise use env var or default to openai
   const provider =
     AI_CONFIG.FORCE_PROVIDER === "auto" ? (process.env.AI_PROVIDER || "openai").toLowerCase() : AI_CONFIG.FORCE_PROVIDER
-
-  if (provider === "groq") {
-    const apiKey = process.env.GROQ_API_KEY
-    if (!apiKey) {
-      // Fallback to OpenAI if Groq not configured
-      if (process.env.OPENAI_API_KEY) {
-        const modelName = AI_CONFIG.OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4o-mini"
-        return { model: openaiProvider(modelName), provider: "openai", modelName }
-      }
-      return { error: { code: "not_configured", message: "Neither GROQ_API_KEY nor OPENAI_API_KEY found" } }
-    }
-    const groq = createOpenAI({
-      baseURL: "https://api.groq.com/openai/v1",
-      apiKey,
-    })
-    const modelName = AI_CONFIG.GROQ_MODEL || process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
-    return { model: groq(modelName), provider: "groq", modelName }
-  }
 
   if (provider === "openai") {
     const apiKey = process.env.OPENAI_API_KEY
@@ -44,7 +27,30 @@ function selectModel() {
     return { model: openaiProvider(modelName), provider: "openai", modelName }
   }
 
-  // Default fallback: try Groq first, then OpenAI
+  if (provider === "groq") {
+    const apiKey = process.env.GROQ_API_KEY
+    if (!apiKey) {
+      // Fallback to OpenAI if Groq not configured
+      if (process.env.OPENAI_API_KEY) {
+        const modelName = AI_CONFIG.OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4o-mini"
+        return { model: openaiProvider(modelName), provider: "openai", modelName }
+      }
+      return { error: { code: "not_configured", message: "Neither GROQ_API_KEY nor OPENAI_API_KEY found" } }
+    }
+    const groq = createOpenAI({
+      baseURL: "https://api.groq.com/openai/v1",
+      apiKey,
+    })
+    const modelName = AI_CONFIG.GROQ_MODEL || process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
+    return { model: groq(modelName), provider: "groq", modelName }
+  }
+
+  // Default fallback: try OpenAI first, then Groq
+  if (process.env.OPENAI_API_KEY) {
+    const modelName = AI_CONFIG.OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4o-mini"
+    return { model: openaiProvider(modelName), provider: "openai", modelName }
+  }
+
   if (process.env.GROQ_API_KEY) {
     const groq = createOpenAI({
       baseURL: "https://api.groq.com/openai/v1",
@@ -54,12 +60,7 @@ function selectModel() {
     return { model: groq(modelName), provider: "groq", modelName }
   }
 
-  if (process.env.OPENAI_API_KEY) {
-    const modelName = AI_CONFIG.OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4o-mini"
-    return { model: openaiProvider(modelName), provider: "openai", modelName }
-  }
-
-  return { error: { code: "not_configured", message: "Neither GROQ_API_KEY nor OPENAI_API_KEY found" } }
+  return { error: { code: "not_configured", message: "Neither OPENAI_API_KEY nor GROQ_API_KEY found" } }
 }
 
 export async function POST(req: NextRequest) {
@@ -69,6 +70,19 @@ export async function POST(req: NextRequest) {
     risk?: { level: "low" | "medium" | "high" }
     financialSummary?: any
     conversationHistory?: any[]
+  }
+
+  // Get the latest user message for financial topic validation
+  const latestUserMessage = [...body.messages].reverse().find((m) => m.role === "user")
+
+  // Check if the query is financial-related (skip for first message or greetings)
+  if (latestUserMessage && !isFinancialQuery(latestUserMessage.content)) {
+    return NextResponse.json({
+      text: getFinancialRefusalMessage(),
+      provider: "financial-guard",
+      model: "topic-filter",
+      restricted: true,
+    })
   }
 
   const sel = selectModel()
@@ -81,10 +95,16 @@ export async function POST(req: NextRequest) {
 
   const history = body.messages.map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`).join("\n")
 
-  // Enhanced system prompt with integrated data
+  // Enhanced system prompt with strict financial limitations
   const systemParts = [
-    "You are PersonaForge AI, a sophisticated banking assistant powered by BPI (Bank of the Philippine Islands) technology.",
-    "You provide personalized financial guidance based on the user's complete profile, transaction history, and conversation context.",
+    "You are PersonaForge AI, a specialized banking and financial assistant exclusively for BPI (Bank of the Philippine Islands).",
+    "CRITICAL LIMITATION: You MUST ONLY respond to banking, finance, and money-related questions. You CANNOT and WILL NOT discuss any other topics.",
+
+    "STRICT GUIDELINES:",
+    "- ONLY provide advice on banking, investments, loans, savings, budgeting, financial planning, and BPI services",
+    "- REFUSE to answer questions about weather, sports, entertainment, politics, health, technology, or any non-financial topics",
+    "- If asked about non-financial topics, politely redirect to financial services",
+    "- Always provide personalized advice based on the user's financial data and persona",
 
     // Risk assessment
     body.risk?.level === "high"
@@ -111,7 +131,7 @@ export async function POST(req: NextRequest) {
           .join(" | ")}`
       : "",
 
-    "Always provide specific, actionable advice tailored to their financial situation. Use Philippine Peso (₱) for currency references. Be empathetic and match their communication style.",
+    "Always provide specific, actionable financial advice tailored to their situation. Use Philippine Peso (₱) for currency references. Be empathetic and match their communication style while staying strictly within banking and financial topics.",
   ]
 
   const system = systemParts.filter(Boolean).join("\n\n")
