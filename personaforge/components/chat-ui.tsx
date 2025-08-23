@@ -210,6 +210,8 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             {messages.map((m) => {
               const isUser = m.role === "user"
               const content = isUser ? m.content : formatAssistantText(m.content)
+              const isRestricted = !isUser && m.content.includes("I'm PersonaForge AI, your specialized banking")
+
               return (
                 <div key={m.id} className={isUser ? "text-right" : "text-left"}>
                   <div
@@ -217,7 +219,9 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
                       "inline-block max-w-[85%] rounded-lg px-3 py-2 leading-relaxed break-words",
                       isUser
                         ? "bg-primary text-primary-foreground text-sm"
-                        : "bg-muted text-sm border border-primary/10",
+                        : isRestricted
+                          ? "bg-secondary/10 text-secondary border border-secondary/20 text-sm"
+                          : "bg-muted text-sm border border-primary/10",
                     ].join(" ")}
                   >
                     {isUser ? (
@@ -242,7 +246,7 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             <Input
               value={input}
               onChange={(e) => setInput(e.currentTarget.value)}
-              placeholder="Ask about your finances, goals, or banking needs..."
+              placeholder="Ask about banking, investments, loans, budgeting, or financial planning..."
               aria-label="Your message"
               className="border-primary/20 focus:border-primary"
             />

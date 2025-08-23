@@ -3,7 +3,7 @@
 export const AI_CONFIG = {
   // Set to 'groq' or 'openai' to force a specific provider
   // Set to 'auto' to use the smart fallback logic
-  FORCE_PROVIDER: "openai", // or 'groq' or 'auto'
+  FORCE_PROVIDER: "openai" as "groq" | "openai" | "auto",
 
   // Model overrides (optional)
   GROQ_MODEL: "llama-3.3-70b-versatile", // or 'llama-3.1-8b-instant' for speed
@@ -23,5 +23,5 @@ export const AI_PRESETS = {
 }
 
 // Uncomment one of these to use a preset:
-// Object.assign(AI_CONFIG, AI_PRESETS.GROQ_SMART)
-// Object.assign(AI_CONFIG, AI_PRESETS.OPENAI_PREMIUM)
+// Object.assign(AI_CONFIG, AI_PRESETS.GROQ_FAST)
+// Object.assign(AI_CONFIG, AI_PRESETS.OPENAI_CHEAP)
