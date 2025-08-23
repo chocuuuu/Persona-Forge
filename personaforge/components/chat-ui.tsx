@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Loader2, ShieldAlert, Sparkles, Cpu } from "lucide-react"
+import { Loader2, ShieldAlert, Cpu, Crown } from "lucide-react"
 import { analyzeEmotion } from "@/lib/emotion"
 import { assessImpulsiveRisk } from "@/lib/guardrails"
 import {
@@ -17,11 +17,14 @@ import {
   saveLocalPersona,
 } from "@/lib/client-personas"
 import { loadFaq, findFaqAnswer } from "@/lib/faq"
+import { getFinancialSummary } from "@/lib/transactions"
+import { getAuthState } from "@/lib/auth"
 import type { Persona } from "@/types/persona"
+import type { FinancialSummary } from "@/types/transaction"
 import Markdown from "@/components/markdown"
 import { formatAssistantText } from "@/lib/text-format"
 
-type ChatMessage = { id: string; role: "user" | "assistant"; content: string }
+type ChatMessage = { id: string; role: "user" | "assistant"; content: string; timestamp: string }
 type ModelInfo = { provider: string; model: string; config?: string }
 
 export default function ChatUI({ className = "h-full min-h-0" }: { className?: string }) {
@@ -32,6 +35,7 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
   const [persona, setPersona] = useState<Persona | null>(null)
   const [riskInfo, setRiskInfo] = useState<ReturnType<typeof assessImpulsiveRisk> | null>(null)
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null)
+  const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null)
 
   const listRef = useRef<HTMLDivElement | null>(null)
 
@@ -45,6 +49,13 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
     const id = getOrCreateSessionPersonaId()
     const p = getLocalPersonaById(id)
     if (p) setPersona(p)
+
+    // Load user's financial data
+    const auth = getAuthState()
+    if (auth.user) {
+      const summary = getFinancialSummary(auth.user.id)
+      setFinancialSummary(summary)
+    }
   }, [])
 
   // Check model info on mount
@@ -77,7 +88,8 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
     const text = input.trim()
     if (!text) return
 
-    const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", content: text }
+    const timestamp = new Date().toISOString()
+    const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", content: text, timestamp }
     setMessages((m) => [...m, userMsg])
     setInput("")
 
@@ -98,9 +110,18 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
         persona: current ?? getLocalPersonaById(getOrCreateSessionPersonaId()),
         faq,
         risk,
+        financialSummary,
       })
 
-      setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: result.text }])
+      setMessages((m) => [
+        ...m,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: result.text,
+          timestamp: new Date().toISOString(),
+        },
+      ])
 
       // Update model info from the actual response
       if (result.modelInfo) {
@@ -122,15 +143,15 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
     <Card className={className}>
       <CardContent className="h-full p-0">
         <div className="grid h-full grid-rows-[auto_1fr_auto]">
-          <div className="border-b p-3 flex items-center justify-between">
+          <div className="border-b p-3 flex items-center justify-between bg-gradient-to-r from-primary/5 to-secondary/5">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-emerald-600" />
-              <p className="text-sm font-medium">Persona-aware Chat</p>
+              <Crown className="h-4 w-4 text-primary" />
+              <p className="text-sm font-medium">PersonaForge AI Assistant</p>
             </div>
             <div className="flex items-center gap-2">
               {/* Model Info Badge */}
               {modelInfo && (
-                <Badge variant="outline" className="gap-1">
+                <Badge variant="outline" className="gap-1 border-primary/20">
                   <Cpu className="h-3 w-3" />
                   <span className="text-xs">
                     {modelInfo.provider === "groq" && "🚀"}
@@ -143,29 +164,34 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
               {/* Emotion Badges */}
               {latestEmotion && (
                 <>
-                  <Badge variant="secondary">{latestEmotion.label}</Badge>
-                  <Badge variant="outline">score {latestEmotion.score}</Badge>
+                  <Badge variant="secondary" className="bg-secondary/10 text-secondary border-secondary/20">
+                    {latestEmotion.label}
+                  </Badge>
+                  <Badge variant="outline" className="border-primary/20">
+                    score {latestEmotion.score}
+                  </Badge>
                 </>
               )}
             </div>
           </div>
 
           <div ref={listRef} className="min-h-0 overflow-y-auto p-4 space-y-3">
-            {/* Model Info Alert */}
+            {/* Enhanced Model Info Alert */}
             {modelInfo && (
-              <Alert variant="default">
-                <Cpu className="h-4 w-4" />
-                <AlertTitle>AI Model Active</AlertTitle>
+              <Alert variant="default" className="border-primary/20">
+                <Crown className="h-4 w-4 text-primary" />
+                <AlertTitle className="text-primary">PersonaForge AI Active</AlertTitle>
                 <AlertDescription className="text-xs">
                   Using {modelInfo.provider.toUpperCase()} • {modelInfo.model}
                   {modelInfo.config && ` • ${modelInfo.config}`}
+                  {financialSummary && ` • Financial data integrated`}
                 </AlertDescription>
               </Alert>
             )}
 
             {persona ? (
-              <Alert variant="default">
-                <AlertTitle>Persona Active</AlertTitle>
+              <Alert variant="default" className="border-secondary/20">
+                <AlertTitle className="text-secondary">Persona Active</AlertTitle>
                 <AlertDescription className="text-xs">
                   {persona.name} • tone: {persona.tonePreference} • risk: {persona.riskAffinity} • channels:{" "}
                   {persona.contactChannels.join(", ")}
@@ -189,8 +215,9 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
                   <div
                     className={[
                       "inline-block max-w-[85%] rounded-lg px-3 py-2 leading-relaxed break-words",
-                      // Make sizes consistent: both text-sm
-                      isUser ? "bg-emerald-600 text-white text-sm" : "bg-muted text-sm",
+                      isUser
+                        ? "bg-primary text-primary-foreground text-sm"
+                        : "bg-muted text-sm border border-primary/10",
                     ].join(" ")}
                   >
                     {isUser ? (
@@ -205,8 +232,8 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
 
             {loading && (
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating response...
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                Generating personalized response...
               </div>
             )}
           </div>
@@ -215,10 +242,11 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             <Input
               value={input}
               onChange={(e) => setInput(e.currentTarget.value)}
-              placeholder="Type a message about your finances (e.g., I'm so excited to take a loan for a new car!)"
+              placeholder="Ask about your finances, goals, or banking needs..."
               aria-label="Your message"
+              className="border-primary/20 focus:border-primary"
             />
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="bg-primary hover:bg-primary/90">
               Send
             </Button>
           </form>
@@ -229,16 +257,23 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
 }
 
 async function getAssistantReply(args: {
-  messages: { role: "user" | "assistant"; content: string }[]
+  messages: { role: "user" | "assistant"; content: string; timestamp: string }[]
   persona: Persona | null
   faq: { q: string; a: string }[]
   risk: ReturnType<typeof assessImpulsiveRisk>
+  financialSummary: FinancialSummary | null
 }): Promise<{ text: string; modelInfo?: ModelInfo }> {
   try {
     const res = await fetch("/api/ai", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: args.messages, persona: args.persona, risk: args.risk }),
+      body: JSON.stringify({
+        messages: args.messages.map((m) => ({ role: m.role, content: m.content })),
+        persona: args.persona,
+        risk: args.risk,
+        financialSummary: args.financialSummary,
+        conversationHistory: args.messages.slice(-10), // Last 10 messages for context
+      }),
     })
     if (res.ok) {
       const data = (await res.json()) as { text: string; provider?: string; model?: string; config?: string }
