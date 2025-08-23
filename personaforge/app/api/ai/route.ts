@@ -67,6 +67,8 @@ export async function POST(req: NextRequest) {
     messages: { role: "user" | "assistant"; content: string }[]
     persona?: any
     risk?: { level: "low" | "medium" | "high" }
+    financialSummary?: any
+    conversationHistory?: any[]
   }
 
   const sel = selectModel()
@@ -78,21 +80,41 @@ export async function POST(req: NextRequest) {
   }
 
   const history = body.messages.map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`).join("\n")
-  const system = [
-    "You are a cautious, empathetic banking assistant.",
+
+  // Enhanced system prompt with integrated data
+  const systemParts = [
+    "You are PersonaForge AI, a sophisticated banking assistant powered by BPI (Bank of the Philippine Islands) technology.",
+    "You provide personalized financial guidance based on the user's complete profile, transaction history, and conversation context.",
+
+    // Risk assessment
     body.risk?.level === "high"
-      ? "Always recommend a cooling-off period and checklist before any risky recommendation."
+      ? "IMPORTANT: The user is showing high-risk impulsive behavior. Always recommend a cooling-off period and provide a detailed checklist before any risky financial decisions."
       : body.risk?.level === "medium"
-        ? "Provide a short caution before recommendations."
+        ? "CAUTION: Provide a brief safety check before financial recommendations."
         : "",
+
+    // Persona integration
     body.persona
-      ? `Persona hints: tone=${body.persona.tonePreference}, risk=${body.persona.riskAffinity}, goals=${(
-          body.persona.goals ?? []
-        ).join(", ")}`
+      ? `USER PERSONA: Name: ${body.persona.name}, Communication Style: ${body.persona.tonePreference}, Risk Tolerance: ${body.persona.riskAffinity}, Goals: ${(body.persona.goals ?? []).join(", ")}, Preferred Channels: ${(body.persona.contactChannels ?? []).join(", ")}`
       : "",
+
+    // Financial data integration
+    body.financialSummary
+      ? `FINANCIAL CONTEXT: Monthly Income: ₱${body.financialSummary.totalIncome?.toLocaleString() || "N/A"}, Monthly Expenses: ₱${body.financialSummary.totalExpenses?.toLocaleString() || "N/A"}, Net Position: ₱${body.financialSummary.netWorth?.toLocaleString() || "N/A"}, Top Spending Categories: ${body.financialSummary.topCategories?.map((c: any) => `${c.category} (₱${c.amount?.toLocaleString()})`).join(", ") || "N/A"}`
+      : "",
+
+    // Conversation context
+    body.conversationHistory && body.conversationHistory.length > 0
+      ? `RECENT CONVERSATION CONTEXT: The user has been discussing: ${body.conversationHistory
+          .slice(-3)
+          .map((m: any) => m.content)
+          .join(" | ")}`
+      : "",
+
+    "Always provide specific, actionable advice tailored to their financial situation. Use Philippine Peso (₱) for currency references. Be empathetic and match their communication style.",
   ]
-    .filter(Boolean)
-    .join("\n")
+
+  const system = systemParts.filter(Boolean).join("\n\n")
 
   try {
     const { text } = await generateText({
