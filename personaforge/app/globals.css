@@ -15,9 +15,9 @@
     --primary: 0 70% 50%;
     --primary-foreground: 0 0% 9%;
 
-    /* BPI Gold (slightly adjusted for dark mode) */
-    --secondary: 45 93% 55%;
-    --secondary-foreground: 0 0% 9%;
+    /* Darker Red (slightly adjusted for dark mode) */
+    --secondary: 0 60% 35%;
+    --secondary-foreground: 0 0% 98%;
 
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
@@ -28,7 +28,7 @@
     --ring: 0 70% 50%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-  }
+}
 
 @layer utilities {
   .text-balance {
@@ -89,8 +89,8 @@
     --primary: 0 70% 41%; /* BPI Red #B91C1C */
     --primary-foreground: 0 0% 98%;
 
-    /* BPI Gold as Secondary */
-    --secondary: 45 93% 47%; /* BPI Gold #F59E0B */
+    /* Darker Red as Secondary */
+    --secondary: 0 60% 30%; /* Darker Red #7F1D1D */
     --secondary-foreground: 0 0% 98%;
 
     /* Muted colors with BPI theme */
@@ -110,8 +110,18 @@
 
     --radius: 0.5rem;
   }
+
+  @layer base {
+  * {
+    @apply border-border;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  }
 }
 
+/* BPI-specific enhancements */
 .bpi-gradient {
   background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
 }

@@ -46,11 +46,11 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
 
   return (
     <div className="grid h-dvh grid-rows-[auto_1fr_auto]">
-      <header className="border-b bg-primary text-primary-foreground shadow-lg">
+      <header className="border-b shadow-lg" style={{ backgroundColor: "#B91C1C", color: "white" }}>
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" className="flex items-center gap-2">
-            <Crown className="h-6 w-6 text-secondary" aria-hidden="true" />
-            <span className="font-bold text-xl">{title}</span>
+            <Crown className="h-6 w-6" style={{ color: "#7F1D1D" }} aria-hidden="true" />
+            <span className="font-bold text-xl text-white">{title}</span>
             <span className="sr-only">Go to home</span>
           </Link>
 
@@ -63,10 +63,8 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
                   <Link key={item.href} href={item.href}>
                     <Button
                       variant={active ? "secondary" : "ghost"}
-                      className={cn(
-                        "gap-2 text-primary-foreground hover:text-primary-foreground hover:bg-white/10",
-                        active && "bg-secondary text-white hover:bg-secondary/90",
-                      )}
+                      className={cn("gap-2 text-white hover:text-white", active ? "text-white" : "hover:bg-white/10")}
+                      style={active ? { backgroundColor: "#7F1D1D" } : {}}
                       aria-current={active ? "page" : undefined}
                     >
                       <Icon className="h-4 w-4" aria-hidden="true" />
@@ -82,7 +80,7 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
               {auth.isAuthenticated && auth.user ? (
                 <>
                   <Link href="/profile">
-                    <Button variant="ghost" className="gap-2 text-primary-foreground hover:text-primary-foreground">
+                    <Button variant="ghost" className="gap-2 text-white hover:text-white hover:bg-white/10">
                       <User className="h-4 w-4" />
                       {auth.user.name}
                     </Button>
@@ -91,7 +89,7 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
                     variant="ghost"
                     size="sm"
                     onClick={handleLogout}
-                    className="text-primary-foreground hover:text-primary-foreground"
+                    className="text-white hover:text-white hover:bg-white/10"
                   >
                     <LogOut className="h-4 w-4" />
                   </Button>
@@ -100,7 +98,7 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
                 <Link href="/login">
                   <Button
                     variant="outline"
-                    className="gap-2 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                    className="gap-2 bg-transparent border-white text-white hover:bg-white hover:text-red-700"
                   >
                     <User className="h-4 w-4" />
                     Sign In

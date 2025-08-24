@@ -143,15 +143,18 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
     <Card className={className}>
       <CardContent className="h-full p-0">
         <div className="grid h-full grid-rows-[auto_1fr_auto]">
-          <div className="border-b p-3 flex items-center justify-between bg-gradient-to-r from-primary/5 to-secondary/5">
+          <div
+            className="border-b p-3 flex items-center justify-between"
+            style={{ background: "linear-gradient(135deg, #B91C1C 0%, #7F1D1D 100%)" }}
+          >
             <div className="flex items-center gap-2">
-              <Crown className="h-4 w-4 text-primary" />
-              <p className="text-sm font-medium">PersonaForge AI Assistant</p>
+              <Crown className="h-4 w-4 text-white" />
+              <p className="text-sm font-medium text-white">PersonaForge AI Assistant</p>
             </div>
             <div className="flex items-center gap-2">
               {/* Model Info Badge */}
               {modelInfo && (
-                <Badge variant="outline" className="gap-1 border-primary/20">
+                <Badge variant="outline" className="gap-1 border-white/20 text-white">
                   <Cpu className="h-3 w-3" />
                   <span className="text-xs">
                     {modelInfo.provider === "groq" && "🚀"}
@@ -164,10 +167,10 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
               {/* Emotion Badges */}
               {latestEmotion && (
                 <>
-                  <Badge variant="secondary" className="bg-secondary/10 text-secondary border-secondary/20">
+                  <Badge variant="secondary" className="bg-white/20 text-white border-white/20">
                     {latestEmotion.label}
                   </Badge>
-                  <Badge variant="outline" className="border-primary/20">
+                  <Badge variant="outline" className="border-white/20 text-white">
                     score {latestEmotion.score}
                   </Badge>
                 </>
@@ -191,7 +194,7 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
 
             {persona ? (
               <Alert variant="default" className="border-secondary/20">
-                <AlertTitle className="text-secondary">Persona Active</AlertTitle>
+                <AlertTitle style={{ color: "#7F1D1D" }}>Persona Active</AlertTitle>
                 <AlertDescription className="text-xs">
                   {persona.name} • tone: {persona.tonePreference} • risk: {persona.riskAffinity} • channels:{" "}
                   {persona.contactChannels.join(", ")}
@@ -213,12 +216,12 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
               return (
                 <div key={m.id} className={isUser ? "text-right" : "text-left"}>
                   <div
-                    className={[
-                      "inline-block max-w-[85%] rounded-lg px-3 py-2 leading-relaxed break-words",
+                    className="inline-block max-w-[85%] rounded-lg px-3 py-2 leading-relaxed break-words text-sm"
+                    style={
                       isUser
-                        ? "bg-primary text-primary-foreground text-sm"
-                        : "bg-muted text-sm border border-primary/10",
-                    ].join(" ")}
+                        ? { backgroundColor: "#7F1D1D", color: "white" } // Dark red for user messages
+                        : { backgroundColor: "#f8f9fa", color: "#333", border: "1px solid #e9ecef" } // Clear/light for AI responses
+                    }
                   >
                     {isUser ? (
                       <span className="whitespace-pre-wrap">{content}</span>
@@ -244,9 +247,15 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
               onChange={(e) => setInput(e.currentTarget.value)}
               placeholder="Ask about banking, investments, loans, budgeting, or financial planning..."
               aria-label="Your message"
-              className="border-primary/20 focus:border-primary"
+              style={{ borderColor: "#B91C1C" }}
+              className="focus:border-red-700"
             />
-            <Button type="submit" disabled={loading} className="bg-primary hover:bg-primary/90">
+            <Button
+              type="submit"
+              disabled={loading}
+              style={{ backgroundColor: "#B91C1C", color: "white" }}
+              className="hover:opacity-90"
+            >
               Send
             </Button>
           </form>

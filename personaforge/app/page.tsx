@@ -26,18 +26,21 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/personas">
-                <Button className="bg-primary hover:bg-primary/90 text-white">View Personas</Button>
+                <Button style={{ backgroundColor: "#B91C1C", color: "white" }} className="hover:opacity-90">
+                  View Personas
+                </Button>
               </Link>
               <Link href="/personas/new">
                 <Button
                   variant="outline"
-                  className="border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent"
+                  style={{ borderColor: "#B91C1C", color: "#B91C1C" }}
+                  className="border-2 bg-transparent hover:bg-red-700 hover:text-white"
                 >
                   Create Persona
                 </Button>
               </Link>
               <Link href="/chat">
-                <Button className="gap-2 bg-secondary hover:bg-secondary/90 text-white">
+                <Button style={{ backgroundColor: "#7F1D1D", color: "white" }} className="gap-2 hover:opacity-90">
                   <Sparkles className="h-4 w-4" />
                   Open Chat Demo
                 </Button>
@@ -47,7 +50,7 @@ export default function HomePage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <Card className="border-primary/20">
                 <CardContent className="flex items-start gap-3 p-4">
-                  <UserCog2 className="h-5 w-5 text-primary" />
+                  <UserCog2 className="h-5 w-5" style={{ color: "#B91C1C" }} />
                   <div>
                     <p className="font-medium">Synthetic Personas</p>
                     <p className="text-sm text-muted-foreground">
@@ -58,7 +61,7 @@ export default function HomePage() {
               </Card>
               <Card className="border-secondary/20">
                 <CardContent className="flex items-start gap-3 p-4">
-                  <Sparkles className="h-5 w-5 text-secondary" />
+                  <Sparkles className="h-5 w-5" style={{ color: "#7F1D1D" }} />
                   <div>
                     <p className="font-medium">Autonomous Personalization</p>
                     <p className="text-sm text-muted-foreground">
@@ -69,7 +72,7 @@ export default function HomePage() {
               </Card>
               <Card className="border-primary/20">
                 <CardContent className="flex items-start gap-3 p-4">
-                  <BrainCircuit className="h-5 w-5 text-primary" />
+                  <BrainCircuit className="h-5 w-5" style={{ color: "#B91C1C" }} />
                   <div>
                     <p className="font-medium">Evolution Loop</p>
                     <p className="text-sm text-muted-foreground">
@@ -80,7 +83,7 @@ export default function HomePage() {
               </Card>
               <Card className="border-secondary/20">
                 <CardContent className="flex items-start gap-3 p-4">
-                  <BadgeCheck className="h-5 w-5 text-secondary" />
+                  <BadgeCheck className="h-5 w-5" style={{ color: "#7F1D1D" }} />
                   <div>
                     <p className="font-medium">Context-Aware</p>
                     <p className="text-sm text-muted-foreground">
