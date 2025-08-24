@@ -30,6 +30,12 @@ function parseCsvFaq(csv: string): { q: string; a: string }[] {
 
 export function findFaqAnswer(userText: string, faq: { q: string; a: string }[], threshold = 0.4): string | null {
   if (!faq.length) return null
+
+  // First check if the question is finance-related
+  if (!isFinanceRelated(userText)) {
+    return "I'm PersonaForge AI, specialized in banking and financial services. I can only help with questions about banking, investments, loans, budgeting, savings, insurance, and other financial matters. Please ask me about your financial needs."
+  }
+
   const t = normalize(userText)
   let best: { score: number; a: string } | null = null
   for (const item of faq) {
@@ -38,6 +44,90 @@ export function findFaqAnswer(userText: string, faq: { q: string; a: string }[],
   }
   if (best && best.score >= threshold) return best.a
   return null
+}
+
+function isFinanceRelated(text: string): boolean {
+  const financeKeywords = [
+    // Banking
+    "bank",
+    "account",
+    "deposit",
+    "withdraw",
+    "transfer",
+    "atm",
+    "card",
+    "debit",
+    "credit",
+    // Money & Currency
+    "money",
+    "peso",
+    "pesos",
+    "cash",
+    "payment",
+    "pay",
+    "cost",
+    "price",
+    "expensive",
+    "cheap",
+    // Loans & Credit
+    "loan",
+    "borrow",
+    "debt",
+    "credit",
+    "mortgage",
+    "financing",
+    "installment",
+    "interest",
+    "apr",
+    // Investments
+    "invest",
+    "investment",
+    "stock",
+    "bond",
+    "mutual fund",
+    "uitf",
+    "portfolio",
+    "dividend",
+    "return",
+    // Savings & Planning
+    "save",
+    "saving",
+    "savings",
+    "budget",
+    "budgeting",
+    "emergency fund",
+    "retirement",
+    "pension",
+    // Insurance
+    "insurance",
+    "coverage",
+    "premium",
+    "claim",
+    "policy",
+    "life insurance",
+    "health insurance",
+    // Business Finance
+    "business loan",
+    "capital",
+    "cash flow",
+    "revenue",
+    "profit",
+    "expense",
+    "tax",
+    "payroll",
+    // Financial Planning
+    "financial",
+    "finance",
+    "wealth",
+    "income",
+    "salary",
+    "allowance",
+    "spending",
+    "bills",
+  ]
+
+  const lowerText = text.toLowerCase()
+  return financeKeywords.some((keyword) => lowerText.includes(keyword))
 }
 
 function normalize(s: string) {

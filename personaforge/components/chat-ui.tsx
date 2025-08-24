@@ -149,7 +149,7 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
           >
             <div className="flex items-center gap-2">
               <Crown className="h-4 w-4 text-white" />
-              <p className="text-sm font-medium text-white">PersonaForge AI Assistant</p>
+              <p className="text-sm font-medium text-white">PersonaForge AI - Banking & Finance Assistant</p>
             </div>
             <div className="flex items-center gap-2">
               {/* Model Info Badge */}
@@ -183,18 +183,18 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             {modelInfo && (
               <Alert variant="default" className="border-primary/20">
                 <Crown className="h-4 w-4 text-primary" />
-                <AlertTitle className="text-primary">PersonaForge AI Active</AlertTitle>
+                <AlertTitle className="text-primary">PersonaForge Banking AI Active</AlertTitle>
                 <AlertDescription className="text-xs">
-                  Using {modelInfo.provider.toUpperCase()} • {modelInfo.model}
+                  Specialized in banking & finance • {modelInfo.provider.toUpperCase()} • {modelInfo.model}
                   {modelInfo.config && ` • ${modelInfo.config}`}
-                  {financialSummary && ` • Financial data integrated`}
+                  {financialSummary && ` • Your financial data integrated`}
                 </AlertDescription>
               </Alert>
             )}
 
             {persona ? (
               <Alert variant="default" className="border-secondary/20">
-                <AlertTitle style={{ color: "#7F1D1D" }}>Persona Active</AlertTitle>
+                <AlertTitle style={{ color: "#7F1D1D" }}>Your Financial Persona Active</AlertTitle>
                 <AlertDescription className="text-xs">
                   {persona.name} • tone: {persona.tonePreference} • risk: {persona.riskAffinity} • channels:{" "}
                   {persona.contactChannels.join(", ")}
@@ -205,7 +205,7 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             {riskInfo && (
               <Alert variant="destructive" role="alert">
                 <ShieldAlert className="h-4 w-4" />
-                <AlertTitle>Impulse Guard</AlertTitle>
+                <AlertTitle>Financial Risk Alert</AlertTitle>
                 <AlertDescription className="text-xs">{riskInfo.message}</AlertDescription>
               </Alert>
             )}
@@ -236,7 +236,7 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             {loading && (
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                Generating personalized response...
+                Analyzing your financial question...
               </div>
             )}
           </div>
@@ -245,8 +245,8 @@ export default function ChatUI({ className = "h-full min-h-0" }: { className?: s
             <Input
               value={input}
               onChange={(e) => setInput(e.currentTarget.value)}
-              placeholder="Ask about banking, investments, loans, budgeting, or financial planning..."
-              aria-label="Your message"
+              placeholder="Ask about banking, loans, investments, budgeting, savings, insurance, or financial planning..."
+              aria-label="Your financial question"
               style={{ borderColor: "#B91C1C" }}
               className="focus:border-red-700"
             />
@@ -304,10 +304,16 @@ async function getAssistantReply(args: {
   return {
     text:
       found ??
-      `I'm not fully configured with an AI provider yet, but here's a safe-first approach:
-- Clarify your goal, amount, and timeline.
-- Compare at least 3 options (APR, fees, prepayment rules).
-- Simulate cash flow impact across 3–6 months.`,
-    modelInfo: { provider: "offline", model: "FAQ mode" },
+      `I'm PersonaForge AI, specialized in banking and financial services. I can help with:
+
+• Banking services and accounts
+• Loans and credit management  
+• Investment planning
+• Budgeting and savings
+• Insurance coverage
+• Financial planning
+
+Please ask me about your financial needs, and I'll provide personalized advice based on your profile.`,
+    modelInfo: { provider: "offline", model: "Banking FAQ mode" },
   }
 }
