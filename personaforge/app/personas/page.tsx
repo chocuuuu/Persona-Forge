@@ -58,7 +58,7 @@ export default function PersonasPage() {
       <main className="mx-auto w-full max-w-6xl px-4 py-8">
         <header className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="flex items-center gap-2 text-xl font-semibold">
-            <PersonStanding className="h-5 w-5 text-emerald-600" />
+            <PersonStanding className="h-5 w-5 text-primary" />
             Personas
           </h1>
           <div className="flex w-full gap-2 sm:w-auto">
@@ -67,8 +67,15 @@ export default function PersonasPage() {
               onChange={(e) => setQuery(e.currentTarget.value)}
               placeholder="Search by name, summary, or goal"
               aria-label="Search personas"
+              className="border-primary/20 focus:border-primary"
             />
-            <Button onClick={load} variant="outline" disabled={loading} aria-busy={loading}>
+            <Button
+              onClick={load}
+              variant="outline"
+              disabled={loading}
+              aria-busy={loading}
+              className="border-primary/20 bg-transparent"
+            >
               <RefreshCcw className="mr-2 h-4 w-4" />
               Refresh
             </Button>

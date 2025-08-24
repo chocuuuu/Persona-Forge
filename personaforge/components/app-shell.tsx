@@ -3,7 +3,7 @@
 import Link from "next/link"
 import type { PropsWithChildren } from "react"
 import { Button } from "@/components/ui/button"
-import { Banknote, Home, PersonStanding, Sparkles, User, LogOut } from "lucide-react"
+import { Crown, Home, PersonStanding, Sparkles, User, LogOut } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getAuthState, logout } from "@/lib/auth"
@@ -46,11 +46,11 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
 
   return (
     <div className="grid h-dvh grid-rows-[auto_1fr_auto]">
-      <header className="border-b bg-background">
+      <header className="border-b bg-primary text-primary-foreground shadow-lg">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" className="flex items-center gap-2">
-            <Banknote className="h-5 w-5 text-emerald-600" aria-hidden="true" />
-            <span className="font-semibold">{title}</span>
+            <Crown className="h-6 w-6 text-secondary" aria-hidden="true" />
+            <span className="font-bold text-xl">{title}</span>
             <span className="sr-only">Go to home</span>
           </Link>
 
@@ -62,8 +62,11 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
                 return (
                   <Link key={item.href} href={item.href}>
                     <Button
-                      variant={active ? "default" : "ghost"}
-                      className={cn("gap-2", active && "bg-emerald-600 text-white hover:bg-emerald-600")}
+                      variant={active ? "secondary" : "ghost"}
+                      className={cn(
+                        "gap-2 text-primary-foreground hover:text-primary-foreground hover:bg-white/10",
+                        active && "bg-secondary text-white hover:bg-secondary/90",
+                      )}
                       aria-current={active ? "page" : undefined}
                     >
                       <Icon className="h-4 w-4" aria-hidden="true" />
@@ -79,18 +82,26 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
               {auth.isAuthenticated && auth.user ? (
                 <>
                   <Link href="/profile">
-                    <Button variant="ghost" className="gap-2">
+                    <Button variant="ghost" className="gap-2 text-primary-foreground hover:text-primary-foreground">
                       <User className="h-4 w-4" />
                       {auth.user.name}
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="sm" onClick={handleLogout}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="text-primary-foreground hover:text-primary-foreground"
+                  >
                     <LogOut className="h-4 w-4" />
                   </Button>
                 </>
               ) : (
                 <Link href="/login">
-                  <Button variant="outline" className="gap-2 bg-transparent">
+                  <Button
+                    variant="outline"
+                    className="gap-2 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                  >
                     <User className="h-4 w-4" />
                     Sign In
                   </Button>
@@ -101,12 +112,11 @@ export default function AppShell({ children, title = "PersonaForge" }: AppShellP
         </div>
       </header>
 
-      {/* Changed: Allow scrolling in main content area */}
       <main className="min-h-0 overflow-y-auto">{children}</main>
 
       <footer className="border-t bg-background">
         <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs text-muted-foreground">
-          Built with React, Next.js, and shadcn/ui. Connect to Django DRF via NEXT_PUBLIC_API_BASE_URL.
+          Built with React, Next.js, and shadcn/ui. Enhanced with BPI-inspired design and personalized AI.
         </div>
       </footer>
     </div>
