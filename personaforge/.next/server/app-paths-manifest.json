@@ -1,5 +1,8 @@
 {
-  "/login/page": "app/login/page.js",
+  "/api/ai/ping/route": "app/api/ai/ping/route.js",
+  "/api/ai/route": "app/api/ai/route.js",
   "/chat/page": "app/chat/page.js",
+  "/login/page": "app/login/page.js",
+  "/profile/page": "app/profile/page.js",
   "/page": "app/page.js"
 }

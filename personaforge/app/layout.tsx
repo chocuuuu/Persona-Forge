@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "PersonaForge",
   description: "AI-powered banking personas for personalized financial experiences",
+  icons: {
+    icon: "/crown.png",
+  },
 }
 
 export default function RootLayout({
