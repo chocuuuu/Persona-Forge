@@ -82,35 +82,43 @@ These twins simulate decisions, provide predictive insights, and allow safe expe
 
 ### 🔑 Login Page
 Entry point for all users. Customers and bank staff log in securely with credentials to access their personalized dashboards.  
-<img width="1919" height="928" alt="image" src="https://github.com/user-attachments/assets/45e49869-1872-4069-890b-05b14b265701" />
+<img width="1749" height="874" alt="Screenshot 2025-08-26 000839" src="https://github.com/user-attachments/assets/69db77b5-74bd-42ad-9b03-d87c9a134b1a" />
 
 ---
 
-<img width="1919" height="931" alt="image" src="https://github.com/user-attachments/assets/a5ed9c27-9c7f-4bf2-87bf-697e1faacc08" />
+<img width="1732" height="875" alt="image" src="https://github.com/user-attachments/assets/875a1265-8f50-4131-aa7d-e139f4e775b0" />
 
 ---
 
 ### 💬 Chatbot Assistant
 An AI-powered banking assistant that helps customers with queries, product discovery, and personalized recommendations in real time.  
-<img width="1919" height="933" alt="image" src="https://github.com/user-attachments/assets/3754efd7-527e-4447-9c89-284db3bc1405" />
+<img width="1750" height="873" alt="image" src="https://github.com/user-attachments/assets/23c05835-1a16-414d-8952-d3c5d66dd4b7" />
 
 ---
 
-<img width="1918" height="928" alt="image" src="https://github.com/user-attachments/assets/1079eac7-46e8-48bb-8235-0851ae1fb74e" />
+<img width="1748" height="874" alt="image" src="https://github.com/user-attachments/assets/79607419-6e8a-4349-b878-53137493c173" />
 
 ---
 
-<img width="1471" height="719" alt="image" src="https://github.com/user-attachments/assets/0e5a408e-a8d6-417f-9681-35717b6cdc2f" />
+<img width="1750" height="873" alt="image" src="https://github.com/user-attachments/assets/153d9760-0ad4-4032-aea6-3ab96d0fdfcc" />
+
+---
+
+<img width="1749" height="873" alt="image" src="https://github.com/user-attachments/assets/40a2c87a-f502-4cea-977a-1cb180d02951" />
+
+---
+
+<img width="1748" height="872" alt="image" src="https://github.com/user-attachments/assets/869eb34c-2f04-4259-ba9e-d5aa3adf3cb4" />
 
 ---
 
 ### 👤 User Profile Page
 Displays user information, account preferences, and AI-driven persona insights. Customers can view and manage their personalized financial profile here.  
-<img width="1877" height="923" alt="image" src="https://github.com/user-attachments/assets/bf98285f-0a06-4d0a-bac0-60f02b26cf78" />
+<img width="1748" height="869" alt="image" src="https://github.com/user-attachments/assets/2370b48f-9be9-4cea-bd50-64aa16ac202d" />
 
 ---
 
-<img width="1882" height="929" alt="image" src="https://github.com/user-attachments/assets/c9de9763-a1c9-4371-a965-ab02b072c9c4" />
+<img width="1750" height="874" alt="image" src="https://github.com/user-attachments/assets/045b7304-38fb-42f8-9362-911b81f58bb4" />
 
 ---
 
